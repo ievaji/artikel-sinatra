@@ -5,4 +5,6 @@ class Cleaner
   def initialize(value)
     @value = value.delete(' ').gsub(/[^[a-zA-Z]]/, 'x').downcase.capitalize
   end
+
+  def new_def; end
 end
