@@ -1,0 +1,20 @@
+<% if @word.artikel.include?('Not found') %>
+  <h2>Das Wort konnte nicht gefunden werden.</h2>
+  <h3>Überprüfe die Rechtschreibung und versuche nochmal!</h3>
+<% elsif @word.artikel.join.include?('andere Schreibung') %>
+  <h2><%= @word.artikel.join %>.</h2>
+<% elsif @word.artikel.empty? %>
+  <h2><%= "die #{@word.value} (nur Plural)" %></h2>
+<% else %>
+  <% @word.artikel.uniq.each do |art| %>
+    <h2><%= "#{art} #{@word.value}" %></h2>
+  <% end %>
+  <% if @word.artikel.length > 1 %>
+    <h3>Das Wort hat mehrere Bedeutungen.</h3>
+  <% end %>
+<% end %>
+<form action="/" method="POST">
+  <input type="hidden" name="authenticity_token" value="_post_action_token">
+  <input type="text" id="word" name="word" required>
+  <input type="submit" value="Suchen">
+</form>
