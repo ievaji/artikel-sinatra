@@ -8,8 +8,8 @@ class Word
   attr_reader :value, :artikel
 
   def initialize(value)
-    cleaned = Cleaner.new(value)
-    @value = cleaned.value
+    cleaner = Cleaner.new
+    @value = cleaner.clean(value).capitalize
   end
 
   def adjust_artikel(scraped_results)

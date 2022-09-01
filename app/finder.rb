@@ -1,24 +1,27 @@
 # frozen_string_literal: true
 
-# Finder fetches the missing data for the word it is initialized with.
 require 'nokogiri'
 require 'open-uri'
 require 'net/http'
 
+# Finder fetches the missing data for the word it is initialized with.
 class Finder
   attr_reader :word
   attr_accessor :results
 
   def initialize(word)
     @word = convert_to_unicode(word)
+    @cleaner = Cleaner.new
+    @results = []
   end
 
-  def find_data
-    @results = []
+  def find_artikel
     response = net_response(word)
     return results if response.include?('Not found')
 
     return results if regional_spelling?(response)
+
+    return results if declinated_form?(response)
 
     extract_artikel(response)
     results
@@ -49,24 +52,35 @@ class Finder
   end
 
   def exclude_last_names(response)
-    text = response.search('#toc .toctext').text.strip
-    return response unless text.include?('Nachname')
+    data = response.search('#toc .toctext').text.strip
+    return response unless data.include?('Nachname')
 
-    arr = text.split('Übersetzungen')
-    cleaned = arr.shift.split(' (Deutsch)').pop
-    arr.unshift(cleaned).each do |data_unit|
-      unless data_unit.include?('Nachname') || data_unit.include?('nym')
-        data_unit.split(', ').each { |item| results << ARTIKEL[item] if ARTIKEL.key?(item) }
+    cleaned = @cleaner.prepare(data)
+    cleaned.each do |unit|
+      unless unit.include?('Nachname') || unit.include?('nym')
+        unit.split(', ').each { |item| results << ARTIKEL[item] if ARTIKEL.key?(item) }
       end
     end
   end
 
   def regional_spelling?(response)
-    content = response.search('#mw-content-text .mw-parser-output table').text.strip
-    return false unless content.include?('andere Schreibung')
+    text = extract_table_text(response)
+    return false unless text.include?('andere Schreibung')
 
-    results << content.split('.').first
+    results << text.split('.').first
     true
+  end
+
+  def declinated_form?(response)
+    text = extract_table_text(response)
+    return false unless text.include?('flektierte Form')
+
+    results << @cleaner.clean_table_text(text.split('.').first)
+    true
+  end
+
+  def extract_table_text(response)
+    response.search('#mw-content-text .mw-parser-output table').text.strip
   end
 
   def net_response(word)
