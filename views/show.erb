@@ -1,5 +1,5 @@
 <% if @word.artikel.include?('Not found') %>
-  <h2>Das Wort konnte nicht gefunden werden.</h2>
+  <h2><%= "#{@word.value}" %> konnte nicht gefunden werden.</h2>
   <h3>Überprüfe die Rechtschreibung und versuche nochmal!</h3>
 <% elsif @word.artikel.join.length > 20 %>
   <h2><%= @word.artikel.join %>.</h2>
