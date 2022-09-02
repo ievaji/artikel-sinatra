@@ -72,7 +72,7 @@ class Finder
 
   def declinated_form?(response)
     text = extract_table_text(response)
-    return false unless text.include?('flektierte Form')
+    return false unless text.include?('flektierte Form') && text.length < 400
 
     results << @cleaner.clean_table_text(text.split('.').first)
     true
