@@ -4,7 +4,7 @@ require 'nokogiri'
 require 'open-uri'
 require 'net/http'
 
-# Finder fetches the missing data for the word it is initialized with.
+# Finder fetches the missing data for the word it is instantiated with.
 class Finder
   attr_reader :word, :results
 

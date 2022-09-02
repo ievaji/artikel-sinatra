@@ -1,3 +1,20 @@
+body {
+  padding: 0;
+  margin: 0;
+}
+
+.wrapper {
+  padding: 2rem;
+  margin: 0;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
 .red-text {
   color: red;
 }
@@ -10,6 +27,8 @@
   color: green;
 }
 
-ul {
+ul, li {
   list-style-type: none;
+  margin: 0;
+  padding: 0;
 }
