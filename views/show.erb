@@ -6,9 +6,11 @@
 <% elsif @word.artikel.empty? %>
   <h2><%= "die #{@word.value} (nur Plural)" %></h2>
 <% else %>
-  <% @word.artikel.uniq.each do |art| %>
-    <h2><%= "#{art} #{@word.value}" %></h2>
-  <% end %>
+  <ul class="colored-text">
+    <% @word.artikel.uniq.each do |art| %>
+      <h2><li><%= "#{art} #{@word.value}" %></li></h2>
+    <% end %>
+  </ul>
   <% if @word.artikel.length > 1 %>
     <h3>Das Wort hat mehrere Bedeutungen.</h3>
   <% end %>

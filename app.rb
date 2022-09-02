@@ -10,8 +10,8 @@ configure :development do
   BetterErrors.application_root = File.expand_path(__dir__)
 end
 
-require_relative 'word'
-require_relative 'finder'
+require_relative 'classes/word'
+require_relative 'classes/finder'
 
 get '/' do
   erb :home

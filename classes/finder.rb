@@ -6,8 +6,7 @@ require 'net/http'
 
 # Finder fetches the missing data for the word it is initialized with.
 class Finder
-  attr_reader :word
-  attr_accessor :results
+  attr_reader :word, :results
 
   def initialize(word)
     @word = convert_to_unicode(word)
