@@ -49,19 +49,26 @@ class Finder
   #
   # 5. Extracting Artikel from pre-filtered data
   def extract_artikel(response)
-    return unless exclude_names(response).is_a?(Nokogiri::HTML4::Document)
+    # if process_names resulted in an Array, the results are already adjusted
+    return if process_names(response).is_a?(Array)
 
     @cleaner.headline_em(response).each do |element|
       results << ARTIKEL[element.text]
     end
   end
 
-  def exclude_names(response)
+  def process_names(response)
     dataset_one = @cleaner.toc_element_text(response)
     dataset_two = @cleaner.headline_text(response)
 
-    case_one = includes_names?(dataset_one)
-    case_two = includes_names?(dataset_two)
+    case_one = includes_any_names?(dataset_one)
+    case_two = includes_any_names?(dataset_two)
+    # special case for toponyms with only one meaning and 'Oder'
+    case_three = (includes_toponyms?(dataset_two) && one_meaning?(dataset_two))
+    exception = (word == 'Oder') # currently the only detected exception, hence handled here
+
+    # returns a Nokogiri object, if no case for further processing applies
+    return response if case_three || exception
 
     return response unless case_one || case_two
 
@@ -71,14 +78,22 @@ class Finder
   def process(dataset)
     cleaned = @cleaner.prepare(dataset)
     cleaned.each do |unit|
-      unless includes_names?(unit)
+      unless includes_any_names?(unit)
         unit.split(', ').each { |item| results << ARTIKEL[item] if ARTIKEL.key?(item) }
       end
     end
   end
 
-  def includes_names?(data)
-    data.include?('name') || data.include?('nym')
+  def includes_any_names?(dataset)
+    dataset.include?('name') || dataset.include?('nym')
+  end
+
+  def includes_toponyms?(dataset)
+    dataset.include?('nym')
+  end
+
+  def one_meaning?(dataset)
+    dataset.split('Substantiv').length < 3
   end
 
   # 4. Checking for regional spelling

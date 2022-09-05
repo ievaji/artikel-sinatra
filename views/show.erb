@@ -1,17 +1,32 @@
 <% if @word.artikel.include?('Not found') || @word.artikel.empty? %>
+
   <h2>Es konnte kein Artikel gefunden werden.</h2>
   <h3>Überprüfe die Rechtschreibung und versuche nochmal!</h3>
+
 <% elsif @word.artikel.join.length > 20 %>
+
   <h2><%= @word.artikel.join %>.</h2>
+
 <% elsif @word.artikel.include?('Plural') %>
+
   <h2><%= "die #{@word.value} (Plural)" %></h2>
+  <h3>Siehe <a target="blank" href="https://de.wiktionary.org/wiki/<%= @word.value.to_s %>">Bedeutung</a>.</h3>
+
 <% else %>
+
   <ul class="colored-text">
     <% @word.artikel.uniq.each do |art| %>
       <h2><li><%= "#{art} #{@word.value}" %></li></h2>
     <% end %>
   </ul>
+
   <% if @word.artikel.length > 1 %>
+
     <h3>Das Wort hat <a target="blank" href="https://de.wiktionary.org/wiki/<%= @word.value.to_s %>">mehrere Bedeutungen</a>.</h3>
+
+  <% else %>
+
+    <h3>Siehe <a target="blank" href="https://de.wiktionary.org/wiki/<%= @word.value.to_s %>">Bedeutung</a>.</h3>
+
   <% end %>
 <% end %>
