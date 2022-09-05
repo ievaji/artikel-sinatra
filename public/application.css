@@ -28,6 +28,20 @@ body {
   color: green;
 }
 
+.link {
+  font-family: 'Courier New', Courier, monospace;
+  font-weight: 100;
+}
+
+a {
+  text-decoration: none;
+  color: rgb(88, 88, 88);
+}
+
+a:hover {
+  color: rgb(73, 73, 161);
+}
+
 ul, li {
   list-style-type: none;
   margin: 0;

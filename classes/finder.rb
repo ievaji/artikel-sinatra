@@ -85,7 +85,8 @@ class Finder
   end
 
   def includes_any_names?(dataset)
-    dataset.include?('name') || dataset.include?('nym')
+    # nur 'Nachname' and 'Vorname', not simply 'name' - it will exclude 'Eigenname'
+    dataset.include?('Nachname') || dataset.include?('Vorname') || dataset.include?('nym')
   end
 
   def includes_toponyms?(dataset)
