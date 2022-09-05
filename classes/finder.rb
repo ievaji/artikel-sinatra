@@ -101,7 +101,7 @@ class Finder
 
   # 2. Checking if it's a plural noun
   def only_plural?(response)
-    no_genus_info?(response) && a_noun?(response)
+    no_genus_info?(response) && a_noun?(response) && not_a_name?(response)
   end
 
   def no_genus_info?(response)
@@ -110,6 +110,10 @@ class Finder
 
   def a_noun?(response)
     @cleaner.headline_text(response).include?('Substantiv')
+  end
+
+  def not_a_name?(response)
+    !@cleaner.headline_text(response).include?('name')
   end
 
   # 1. Getting a response and processing it, if not 404
