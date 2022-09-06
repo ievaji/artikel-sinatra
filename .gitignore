@@ -1,0 +1,70 @@
+def find_artikel
+  # !!! decide whether response is gonna get passed to methods or be an instance var
+  # currently there's a mix, so nth will work before refactoring
+  response = net_response(word)
+  return results if response.include?('Not found')
+
+  several_meanings? ? process_content_table : process_content
+
+  results
+end
+
+def several_meanings?(response)
+  !response.search('.toclevel-1').empty?
+end
+
+def process_content_table(response)
+  data = Cleaner.extract_table_data(response)
+  # if the 1st listed meaning is a toponym - the word has no substantial meanings
+  data.first.include?('Toponym') ? include_toponyms(data) : exclude_toponyms(data)
+end
+
+def include_toponyms(arr)
+  arr.each { |str| results << ARTIKEL[str.split(', ')[1]] }
+end
+
+def exclude_toponyms(arr)
+  # the check is based on the logic that Deklinierte Form which also would produce nil
+  # will only ever come first when it is the only meaning. hence this checks for Plural
+  # in case of several meanings: if 1st element has no Genus symbol, it must be Plural.
+  results << 'Plural' if first_meaning_plural?(arr)
+  arr.each { |str| results << ARTIKEL[str.split(', ')[1]] unless str.include?('Toponym') }
+end
+
+def process_content
+  return results << 'Plural' if plural_noun?(response)
+
+  text = Cleaner.parser_output_table_text(response)
+
+  exception?(text) ? extract_info(text) : extract_artikel(response)
+end
+
+def extract_artikel(response)
+  Cleaner.h3_headline_em(response).each do |element|
+    results << ARTIKEL[element.text]
+  end
+end
+# ------------------------------------------------------------------------------
+
+def exception?(text)
+  text.include?('andere Schreibung') ||
+    text.include?('flektierte Form') && text.length < 400
+end
+
+def extract_info(text)
+  results << if text.include?('andere Schreibung')
+               text.split('.').first
+             else
+               @cleaner.clean_table_text(text.split('.').first)
+             end
+end
+
+# ------------------------------------------------------------------------------
+def plural_noun?(response)
+  text = @cleaner.h3_headline_text(response)
+  text.split(', ').length < 2 && text.include?('Substantiv')
+end
+
+def first_meaning_plural?(arr)
+  arr.first.split(', ')[1].nil?
+end

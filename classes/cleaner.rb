@@ -2,39 +2,55 @@
 
 # Cleaner cleans data for both Word and Finder.
 class Cleaner
-  def initialize; end
-
   # Word : initialize : clean the value assigned to it
-  def clean(str)
-    str.delete(' ').gsub(/\P{L}/, 'x').downcase
+  def self.clean(str)
+    str.gsub(/\P{L}/, ' ').delete(' ').downcase
   end
 
   # Finder : exclude_names : clean the first element of a dataset
-  def prepare(str)
+  def self.prepare(str)
     arr = str.split('Übersetzungen')
     cleaned = arr.shift.split(' (Deutsch)').pop
     arr.unshift(cleaned)
   end
 
   # Finder : various methods : getting elements and their text
-  def headline_em(response)
+  def self.h3_headline_em(response)
     response.search('#mw-content-text h3 .mw-headline em')
   end
 
-  def headline_text(response)
+  def self.h3_headline_text(response)
     response.search('#mw-content-text h3 .mw-headline').text.strip
   end
 
-  def toc_element_text(response)
+  def self.toc_element_text(response)
     response.search('#toc .toctext').text.strip
   end
 
-  def table_text(response)
+  def self.parser_output_table_text(response)
     response.search('#mw-content-text .mw-parser-output table').text.strip
   end
 
-  def clean_table_text(str)
+  def self.clean_table_text(str)
     arr = str.split
     arr.length > 7 ? arr.last(7).join(' ') : str
+  end
+
+  # new methods for the refactored Finder
+  def self.extract_table_data(response)
+    arr = []
+    response.search('.toclevel-1').each { |node| arr << node.text if node.text.include?('Deutsch') }
+    result = arr.join.gsub(/(\n)+/, '*').split('*')
+    exclude_irrelevent_data(result)
+  end
+
+  def self.exclude_irrelevent_data(arr)
+    result = []
+    arr.each { |str| result << str if relevant?(str) }
+    result[1..-1]
+  end
+
+  def self.relevant?(str)
+    !str.include?('Übersetzung') && !str.include?('Vorname') && !str.include?('Nachname')
   end
 end

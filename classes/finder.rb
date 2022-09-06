@@ -11,21 +11,14 @@ class Finder
   def initialize(word)
     @word = convert_to_unicode(word)
     @results = []
-    @cleaner = Cleaner.new
   end
 
   def find_artikel
     response = net_response(word)
     return results if response.include?('Not found')
 
-    return results if regional_spelling?(response)
+    several_meanings?(response) ? process_content_table(response) : process_content(response)
 
-    # only_plural? must come before declinated_form? to filter correctly
-    return results << 'Plural' if only_plural?(response)
-
-    return results if declinated_form?(response)
-
-    extract_artikel(response)
     results
   end
 
@@ -45,94 +38,85 @@ class Finder
     'ß' => '%C3%9F'
   }.freeze
 
-  # Method sets listed from last to first based on find_artikel flow
-  #
-  # 5. Extracting Artikel from pre-filtered data
-  def extract_artikel(response)
-    # if process_names resulted in an Array, the results are already adjusted
-    return if process_names(response).is_a?(Array)
+  def several_meanings?(response)
+    !response.search('.toclevel-1').empty?
+  end
 
-    @cleaner.headline_em(response).each do |element|
+  # Scenario 1: several_meanings == true
+  def process_content_table(response)
+    data = Cleaner.extract_table_data(response)
+    return if data.empty?
+
+    only_toponyms?(data) ? include_toponyms(data) : exclude_toponyms(data)
+  end
+
+  def only_toponyms?(data)
+    # Oder is an exception and must pass this filter
+    data.first.include?('Toponym') || word == 'Oder'
+  end
+
+  def include_toponyms(arr)
+    arr.each do |str|
+      key = str.split(', ')[1]
+      results << ARTIKEL[key] unless key.nil?
+    end
+  end
+
+  def exclude_toponyms(arr)
+    # the check is based on the logic that Deklinierte Form which also would produce nil
+    # will only ever come first when it is the only meaning. hence this checks for Plural
+    # in case of several meanings: if 1st element has no Genus symbol, it must be Plural.
+    results << 'Plural' if first_meaning_plural?(arr)
+    arr.each do |str|
+      key = str.split(', ')[1] unless str.include?('Toponym')
+      results << ARTIKEL[key] unless key.nil?
+    end
+  end
+
+  def first_meaning_plural?(arr)
+    arr.first.split(', ')[1].nil?
+  end
+
+  # Scenario 2: several_meanings == false
+  def process_content(response)
+    return results << 'Plural' if plural_noun?(response)
+
+    text = Cleaner.parser_output_table_text(response)
+
+    exception?(text) ? extract_info(text) : extract_artikel(response)
+  end
+
+  def plural_noun?(response)
+    text = Cleaner.h3_headline_text(response)
+    text.split(', ').length < 2 && text.include?('Substantiv')
+    # for later: to handle two-word-long state names
+    # arr = text.split(', ')
+    # !arr.include?('m') && !arr.include?('n') && !arr.include?('f') && arr.include?('Substantiv')
+  end
+
+  def exception?(text)
+    text.include?('andere Schreibung') ||
+      text.include?('flektierte Form') && text.length < 400
+  end
+
+  def extract_info(text)
+    results << if text.include?('andere Schreibung')
+                 text.split('.').first
+               else
+                 Cleaner.clean_table_text(text.split('.').first)
+               end
+  end
+
+  def extract_artikel(response)
+    headline = Cleaner.h3_headline_text(response)
+    return if headline.include?('Vorname') || headline.include?('Nachname')
+
+    Cleaner.h3_headline_em(response).each do |element|
       results << ARTIKEL[element.text]
     end
   end
 
-  def process_names(response)
-    dataset_one = @cleaner.toc_element_text(response)
-    dataset_two = @cleaner.headline_text(response)
-
-    case_one = includes_any_names?(dataset_one)
-    case_two = includes_any_names?(dataset_two)
-    # special case for toponyms with only one meaning and 'Oder'
-    case_three = (includes_toponyms?(dataset_two) && one_meaning?(dataset_two))
-    exception = (word == 'Oder') # currently the only detected exception, hence handled here
-
-    # returns a Nokogiri object, if no case for further processing applies
-    return response if case_three || exception
-
-    return response unless case_one || case_two
-
-    case_one ? process(dataset_one) : results
-  end
-
-  def process(dataset)
-    cleaned = @cleaner.prepare(dataset)
-    cleaned.each do |unit|
-      unless includes_any_names?(unit)
-        unit.split(', ').each { |item| results << ARTIKEL[item] if ARTIKEL.key?(item) }
-      end
-    end
-  end
-
-  def includes_any_names?(dataset)
-    # nur 'Nachname' and 'Vorname', not simply 'name' - it will exclude 'Eigenname'
-    dataset.include?('Nachname') || dataset.include?('Vorname') || dataset.include?('nym')
-  end
-
-  def includes_toponyms?(dataset)
-    dataset.include?('nym')
-  end
-
-  def one_meaning?(dataset)
-    dataset.split('Substantiv').length < 3
-  end
-
-  # 4. Checking for regional spelling
-  def regional_spelling?(response)
-    text = @cleaner.table_text(response)
-    return false unless text.include?('andere Schreibung')
-
-    results << text.split('.').first
-    true
-  end
-
-  # 3. Checking if it's a declinated form
-  def declinated_form?(response)
-    text = @cleaner.table_text(response)
-    return false unless text.include?('flektierte Form') && text.length < 400
-
-    results << @cleaner.clean_table_text(text.split('.').first)
-    true
-  end
-
-  # 2. Checking if it's a plural noun
-  def only_plural?(response)
-    no_genus_info?(response) && a_noun?(response) && not_a_name?(response)
-  end
-
-  def no_genus_info?(response)
-    @cleaner.headline_em(response).empty?
-  end
-
-  def a_noun?(response)
-    @cleaner.headline_text(response).include?('Substantiv')
-  end
-
-  def not_a_name?(response)
-    !@cleaner.headline_text(response).include?('name')
-  end
-
-  # 1. Getting a response and processing it, if not 404
+  # Basic setup
   def net_response(word)
     response = Net::HTTP.get_response(URI("#{URL}#{word}"))
     if response.code == '404'
@@ -143,7 +127,6 @@ class Finder
     end
   end
 
-  # 0. Converting the word to Unicode (German special chars only)
   def convert_to_unicode(word)
     word.value.chars.map! { |char| UNICODE[char] || char }.join
   end

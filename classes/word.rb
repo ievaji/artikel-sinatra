@@ -7,9 +7,13 @@ require_relative 'cleaner'
 class Word
   attr_reader :value, :artikel
 
+  # EXCEPTIONS = { 'vereinigtestaaten' => 'Vereinigte_Staaten' }.freeze
+
   def initialize(value)
-    cleaner = Cleaner.new
-    @value = cleaner.clean(value).capitalize
+    # cleaned = Cleaner.clean(value)
+    # checked = EXCEPTIONS.key?(cleaned) ? EXCEPTIONS[cleaned] : cleaned.capitalize
+    # @value = checked
+    @value = Cleaner.clean(value).capitalize
   end
 
   def adjust_artikel(scraped_results)
