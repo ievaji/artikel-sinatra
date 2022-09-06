@@ -100,11 +100,7 @@ class Finder
   end
 
   def extract_info(text)
-    results << if text.include?('andere Schreibung')
-                 text.split('.').first
-               else
-                 Cleaner.clean_table_text(text.split('.').first)
-               end
+    results << Cleaner.clean_info(text)
   end
 
   def extract_artikel(response)

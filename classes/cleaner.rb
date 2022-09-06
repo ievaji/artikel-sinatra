@@ -31,9 +31,9 @@ class Cleaner
     response.search('#mw-content-text .mw-parser-output table').text.strip
   end
 
-  def self.clean_table_text(str)
-    arr = str.split
-    arr.length > 7 ? arr.last(7).join(' ') : str
+  def self.clean_info(text)
+    arr = text.gsub(/(\n)+/, '*').split('*')
+    arr.length > 1 ? arr[1].split('.').first : arr.join.split('.').first
   end
 
   # new methods for the refactored Finder
