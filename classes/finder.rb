@@ -56,6 +56,7 @@ class Finder
   end
 
   def include_toponyms(arr)
+    # results << 'Plural' if first_meaning_plural?(arr)
     arr.each do |str|
       key = str.split(', ')[1]
       results << ARTIKEL[key] unless key.nil?
@@ -74,7 +75,8 @@ class Finder
   end
 
   def first_meaning_plural?(arr)
-    arr.first.split(', ')[1].nil?
+    first = arr.first.split(', ') # [1].nil?
+    !first.include?('m') && !first.include?('n') && !first.include?('f')
   end
 
   # Scenario 2: several_meanings == false
@@ -88,10 +90,9 @@ class Finder
 
   def plural_noun?(response)
     text = Cleaner.h3_headline_text(response)
-    text.split(', ').length < 2 && text.include?('Substantiv')
-    # for later: to handle two-word-long state names
-    # arr = text.split(', ')
-    # !arr.include?('m') && !arr.include?('n') && !arr.include?('f') && arr.include?('Substantiv')
+    # text.split(', ').length < 2 && text.include?('Substantiv')
+    arr = text.split(', ')
+    !arr.include?('m') && !arr.include?('n') && !arr.include?('f') && arr.include?('Substantiv')
   end
 
   def exception?(text)
