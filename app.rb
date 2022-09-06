@@ -19,7 +19,7 @@ end
 
 post '/' do
   @word = Word.new(params[:word])
-  finder = Finder.new(@word)
+  finder = Finder.new(@word.value)
   data = finder.find_artikel
   @word.adjust_artikel(data)
   erb :show
