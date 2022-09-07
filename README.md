@@ -57,7 +57,7 @@ If, however, the first entry is not a toponym, geographical names are excluded f
 
 The same logic applies to plural: If the first meaning is plural, it is a plural noun. Results are adjusted accordingly, and the method returns them without processing the data any further.
 
-When toponyms are excluded, an additional filter for regionalisms is applied (Cleaner method). It checks the length of each headline in the table of contents. If these strings don’t contain additional information about meaning, which would be another word, the cases listed are merely regional grammatical variations. These, again, are of no interest to the user, since they fall outside standard German.
+When toponyms are excluded, an additional filter for regionalisms is applied. It checks the length of each headline in the table of contents. If these strings don’t contain additional information about meaning, which would be another word, the cases listed are merely regional grammatical variations. These, again, are of no interest to the user, since they fall outside standard German.
 
 ###### #process_page_content
 The second path – if there is no table of contents, the word has only one meaning.
