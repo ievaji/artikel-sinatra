@@ -113,6 +113,8 @@ class Finder
 
   # Scenario 2: several_meanings == false
   def process_page_content
+    return if !Cleaner.h2_headline_text(response).include?('Deutsch')
+
     return results << 'Plural' if plural_noun?
 
     text = Cleaner.parser_output_table_text(response)

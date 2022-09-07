@@ -23,6 +23,10 @@ class Cleaner
     response.search('#mw-content-text h3 .mw-headline').text.strip
   end
 
+  def self.h2_headline_text(response)
+    response.search('#mw-content-text h2 .mw-headline').text
+  end
+
   def self.toc_element_text(response)
     response.search('#toc .toctext').text.strip
   end
@@ -58,6 +62,8 @@ class Cleaner
   # filters out grammatical variations without a listed meaning (regionalisms and alike)
   def self.filter_regionalisms(arr)
     stripped = arr.map { |str| str.gsub(/[0-9.]/, ' ').strip }
+    return stripped if stripped.length == 1
+
     stripped[1].length <= 16 ? [stripped.first] : stripped
   end
 end
