@@ -2,19 +2,12 @@
 
 # Cleaner cleans data for both Word and Finder.
 class Cleaner
-  # Word : initialize : clean the value assigned to it
+  # Word : clean the value assigned to it
   def self.clean(str)
     str.gsub(/\P{L}/, ' ').delete(' ').downcase
   end
 
-  # Finder : exclude_names : clean the first element of a dataset
-  def self.prepare(str)
-    arr = str.split('Übersetzungen')
-    cleaned = arr.shift.split(' (Deutsch)').pop
-    arr.unshift(cleaned)
-  end
-
-  # Finder : various methods : getting elements and their text
+  # Finder : getting elements and their text
   def self.h3_headline_em(response)
     response.search('#mw-content-text h3 .mw-headline em')
   end
@@ -35,17 +28,23 @@ class Cleaner
     response.search('#mw-content-text .mw-parser-output table').text.strip
   end
 
-  def self.clean_info(text)
-    arr = text.gsub(/(\n)+/, '*').split('*')
-    arr.length > 1 ? arr[1].split('.').first : arr.join.split('.').first
-  end
-
-  # new methods for the refactored Finder
   def self.extract_table_data(response)
     arr = []
     response.search('.toclevel-1').each { |node| arr << node.text if node.text.include?('Deutsch') }
     result = arr.join.gsub(/(\n)+/, '*').split('*')
     exclude_irrelevent_data(result)
+  end
+
+  # Finder: processing extracted information
+  def self.clean_parser_output(text)
+    arr = text.gsub(/(\n)+/, '*').split('*')
+    arr.length > 1 ? arr[1].split('.').first : arr.join.split('.').first
+  end
+
+  def self.filter_regionalisms(arr)
+    stripped = arr.map { |str| str.gsub(/[0-9.]/, ' ').strip }
+
+    stripped.length > 1 && stripped[1].length <= 16 ? [stripped.first] : stripped
   end
 
   def self.exclude_irrelevent_data(arr)
@@ -57,12 +56,5 @@ class Cleaner
   def self.relevant?(str)
     !str.include?('Übersetzung') && !str.include?('Vorname') && !str.include?('Nachname') &&
       !str.include?('Abkürzung')
-  end
-
-  # filters out grammatical variations without a listed meaning (regionalisms and alike)
-  def self.filter_regionalisms(arr)
-    stripped = arr.map { |str| str.gsub(/[0-9.]/, ' ').strip }
-
-    stripped.length > 1 && stripped[1].length <= 16 ? [stripped.first] : stripped
   end
 end
