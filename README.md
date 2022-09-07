@@ -35,10 +35,8 @@ Cleaner is a helper class used by both Word and Finder (mostly the latter). All 
 
 Finder is the main working class. It is instantiated with a string (a Word instance) and returns an array of results.
 
-During instantiation it converts the string to Unicode, sends a request, processes the response and saves it as an instance variable for further reference in its methods. The string itself is kept only for quick exception handling (see the example of “Oder” below).
-
 ###### #find_artikel 
-Finder’s main method checks, if the word has several meanings and then processes the response accordingly I two different ways. This kind of binary branching logic is followed throughout the Finder class.
+Based on the data it got upon request, Finder’s main method checks if the word has several meanings, and then processes the response data accordingly in two different ways. This kind of binary branching logic is followed throughout the Finder class.
 
 If the word has several meanings, the response contains a table of contents. In that case it is the element processed. If there’s only one meaning, there will be no table of contents, and headlines are processed instead.
 
