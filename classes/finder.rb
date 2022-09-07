@@ -57,6 +57,11 @@ class Finder
   end
 
   def include_toponyms(arr)
+    # the check is based on the logic that Deklinierte Form which also would produce nil
+    # will only ever come first when it is the only meaning. hence this checks for Plural
+    # in case of several meanings: if 1st element has no Genus symbol, it must be Plural.
+    return results << 'Plural' if first_meaning_plural?(arr)
+
     # OLD CODE :
     arr.each do |str|
       key = str.split(', ')[1]
@@ -76,9 +81,6 @@ class Finder
   end
 
   def exclude_toponyms(arr)
-    # the check is based on the logic that Deklinierte Form which also would produce nil
-    # will only ever come first when it is the only meaning. hence this checks for Plural
-    # in case of several meanings: if 1st element has no Genus symbol, it must be Plural.
     return results << 'Plural' if first_meaning_plural?(arr)
 
     # OLD CODE :
