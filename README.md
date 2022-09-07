@@ -40,7 +40,7 @@ During instantiation it converts the string to Unicode, sends a request, process
 ###### #find_artikel 
 Finder’s main method checks, if the word has several meanings and then processes the response accordingly I two different ways. This kind of binary branching logic is followed throughout the Finder class.
 
-If the word has several meanings, the response contains a table of contents. In that case it is the elements processed. If there’s only one meaning, there will be no table of contents, and the headlines are processed to extract data.
+If the word has several meanings, the response contains a table of contents. In that case it is the element processed. If there’s only one meaning, there will be no table of contents, and headlines are processed instead.
 
 This simplifies debugging, since one can always identify the branch one is on by simply looking at the data source.
 
