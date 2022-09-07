@@ -54,4 +54,10 @@ class Cleaner
     !str.include?('Übersetzung') && !str.include?('Vorname') && !str.include?('Nachname') &&
       !str.include?('Abkürzung')
   end
+
+  # filters out grammatical variations without a listed meaning (regionalisms and alike)
+  def self.filter_regionalisms(arr)
+    stripped = arr.map { |str| str.gsub(/[0-9.]/, ' ').strip }
+    stripped[1].length <= 16 ? [stripped.first] : stripped
+  end
 end

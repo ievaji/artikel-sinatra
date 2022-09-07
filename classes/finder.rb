@@ -9,9 +9,10 @@ class Finder
   attr_reader :word, :results, :response
 
   def initialize(str)
+    # this instance var is only referenced once. however, there it is imo the quickest option.
     @word = convert_to_unicode(str)
     @results = []
-    # net_response modifies results, if response.code == 404
+    # net_response already modifies results, if response.code == 404
     @response = net_response(word)
   end
 
@@ -83,8 +84,10 @@ class Finder
   def exclude_toponyms(arr)
     return results << 'Plural' if first_meaning_plural?(arr)
 
+    filtered = Cleaner.filter_regionalisms(arr)
+
     # OLD CODE :
-    arr.each do |str|
+    filtered.each do |str|
       key = str.split(', ')[1] unless str.include?('Toponym')
       results << ARTIKEL[key] unless key.nil?
     end
