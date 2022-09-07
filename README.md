@@ -13,11 +13,11 @@ It can be tested here: https://artikel-sinatra.herokuapp.com/
 ## How it works
 
 - Classes
-  - [Word](https://github.com/ievaji/artikel-sinatra/edit/master/README.md#word)
-  - [Cleaner](https://github.com/ievaji/artikel-sinatra/edit/master/README.md#cleaner)
-  - [Finder](https://github.com/ievaji/artikel-sinatra/edit/master/README.md#finder)
+  - [Word](https://github.com/ievaji/artikel-sinatra/blob/master/README.md#word)
+  - [Cleaner](https://github.com/ievaji/artikel-sinatra/blob/master/README.md#cleaner)
+  - [Finder](https://github.com/ievaji/artikel-sinatra/blob/master/README.md#finder)
     - Main Methods
-- [Results explained](https://github.com/ievaji/artikel-sinatra/edit/master/README.md#results-explained)
+- [Results explained](https://github.com/ievaji/artikel-sinatra/blob/master/README.md#results-explained)
 
 ## Word
 
