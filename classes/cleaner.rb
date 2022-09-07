@@ -62,8 +62,7 @@ class Cleaner
   # filters out grammatical variations without a listed meaning (regionalisms and alike)
   def self.filter_regionalisms(arr)
     stripped = arr.map { |str| str.gsub(/[0-9.]/, ' ').strip }
-    return stripped if stripped.length == 1
 
-    stripped[1].length <= 16 ? [stripped.first] : stripped
+    stripped.length > 1 && stripped[1].length <= 16 ? [stripped.first] : stripped
   end
 end
