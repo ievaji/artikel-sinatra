@@ -2,22 +2,22 @@
 
 Is it 'der Band', 'das Band' or 'die Band'? Use Artikel to qickly answer that question!
 
-The idea for this project arose out of a daily need to look up the Artikel for German nouns.
+The idea for this project arose out of a daily need to look up the Artikel for German nouns. I made it for learning purposes and the result is meant for anyone who needs help with this part of German grammar. It is strictly non-commercial, in short. Long live free knowledge!
 
-Artikel uses Wiktionary for lookup and links to it for further details.
+Artikel uses Wiktionary for lookup and links to it for further details. 
 
 It can be tested here: https://artikel-sinatra.herokuapp.com/
 
-## DOCUMENTATION
 
-- Information on Classes
+
+## How it works
+
+- Classes
   - [Word](https://github.com/ievaji/artikel-sinatra/edit/master/README.md#word)
   - [Cleaner](https://github.com/ievaji/artikel-sinatra/edit/master/README.md#cleaner)
   - [Finder](https://github.com/ievaji/artikel-sinatra/edit/master/README.md#finder)
     - Main Methods
 - [Results explained](https://github.com/ievaji/artikel-sinatra/edit/master/README.md#results-explained)
-
-## Information on Classes
 
 ## Word
 
