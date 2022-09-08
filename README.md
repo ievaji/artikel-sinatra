@@ -60,7 +60,7 @@ When toponyms are excluded, an additional filter for regionalisms is applied. It
 ###### #process_page_content
 The second path – if there is no table of contents, the word has only one meaning.
 
-This method follows a similar logic of dividing the process into two distinct paths. The deciding factor here is the presence of a longer explanatory text. If that text includes certain keywords, that means we’re dealing with an exception (regional spelling or a declinated form). In this case no Artikel will be found, instead the user will receive the information about the exception at hand. They can then use it to perform a new search.
+This method too follows the logic of dividing the process into two distinct paths. The deciding factor here is the presence of a longer explanatory text. If that text includes certain keywords, that means we’re dealing with an exception (regional spelling or a declinated form). In this case no Artikel will be found, instead the user will receive the information about the exception at hand. They can then use it to perform a new search.
 
 If, however, an exception case cannot be detected, the program will proceed to extract genus information and then convert it into an Artikel and return it to Word. During the extraction process some additional filtering is done to exclude irrelevant information.
 
