@@ -41,8 +41,7 @@ a {
 
 a:hover {
   color: rgb(73, 73, 161);
-  background: linear-gradient(.25turn, white, rgba(223, 213, 161, 0.01), white),
-              linear-gradient(0deg, white,  rgba(223, 213, 161, 0.3) 50%, white);
+  background: radial-gradient(ellipse, rgba(223, 213, 161, 0.3), white 75%);
 }
 
 ul, li {
