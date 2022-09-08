@@ -58,8 +58,9 @@ class Finder
 
   def include_toponyms(arr)
     return results << 'Plural' if first_meaning_plural?(arr)
+
     # In theory problematic: would not include any further Genus data beyond [1]
-    # Practically: of no consequence thus far; same applies to exclude_toponyms
+    # Practically: of no real consequence; same applies to exclude_toponyms.
     arr.each do |str|
       key = str.split(', ')[1]
       results << ARTIKEL[key] unless key.nil?
@@ -67,6 +68,7 @@ class Finder
   end
 
   def exclude_toponyms(arr)
+    # at this point anything with 'name' is already filtered out. which is wrong.
     return results << 'Plural' if first_meaning_plural?(arr)
 
     filtered = Cleaner.filter_regionalisms(arr)

@@ -55,6 +55,6 @@ class Cleaner
 
   def self.relevant?(str)
     !str.include?('Übersetzung') && !str.include?('Vorname') && !str.include?('Nachname') &&
-      !str.include?('Abkürzung')
+      !str.include?('Abkürzung') && !str.include?('Deklinierte Form')
   end
 end
