@@ -1,10 +1,10 @@
 # ARTIKEL
 
-Is it 'der Band', 'das Band' or 'die Band'? Use Artikel to qickly answer that question!
+Is it '*der* Band', '*das* Band' or '*die* Band'? Use ARTIKEL to quickly answer that question!
 
-The idea for this project arose out of a daily need to look up the Artikel for German nouns. I made it for learning purposes and the result is meant for anyone who needs help with this part of German grammar. It is strictly non-commercial, in short. Long live free knowledge!
+The idea for this project arose out of a daily need to look up the Artikel for German nouns. I made it for learning purposes, to try out Sinatra and practice scraping, and the result is meant for anyone who needs help with this part of German grammar. It is strictly non-commercial, in short. Long live free knowledge!
 
-Artikel uses Wiktionary for lookup and links to it for further details. 
+ARTIKEL uses Wiktionary for lookup and links to it for further details. 
 
 It can be tested here: https://artikel-sinatra.herokuapp.com/
 
