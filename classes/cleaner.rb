@@ -32,7 +32,11 @@ class Cleaner
     arr = []
     response.search('.toclevel-1').each { |node| arr << node.text if node.text.include?('Deutsch') }
     result = arr.join.gsub(/(\n)+/, '*').split('*')
-    exclude_irrelevent_data(result)
+    first_case_empty?(response) ? exclude_irrelevent_data(result)[1..-1] : exclude_irrelevent_data(result)
+  end
+
+  def self.first_case_empty?(response)
+    response.search('dd').first.text.include?('Abschnitt fehlt')
   end
 
   # Finder: processing extracted information
@@ -41,7 +45,7 @@ class Cleaner
     arr.length > 1 ? arr[1].split('.').first : arr.join.split('.').first
   end
 
-  def self.filter_regionalisms(arr)
+  def self.filter(arr)
     stripped = arr.map { |str| str.gsub(/[0-9.]/, ' ').strip }
 
     stripped.length > 1 && stripped[1].length <= 16 ? [stripped.first] : stripped

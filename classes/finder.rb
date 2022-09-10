@@ -71,7 +71,7 @@ class Finder
     # at this point anything with 'name' is already filtered out. which is wrong.
     return results << 'Plural' if first_meaning_plural?(arr)
 
-    filtered = Cleaner.filter_regionalisms(arr)
+    filtered = Cleaner.filter(arr)
 
     filtered.each do |str|
       key = str.split(', ')[1] unless str.include?('Toponym')
