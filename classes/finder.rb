@@ -85,7 +85,7 @@ class Finder
 
   # Scenario 2: only one meaning
   def process_page_content
-    return if !Cleaner.h2_headline_text(response).include?('Deutsch')
+    return unless Cleaner.h2_headline_text(response).include?('Deutsch')
 
     return results << 'Plural' if plural_noun?
 
