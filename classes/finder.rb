@@ -68,7 +68,6 @@ class Finder
   end
 
   def exclude_toponyms(arr)
-    # at this point anything with 'name' is already filtered out. which is wrong.
     return results << 'Plural' if first_meaning_plural?(arr)
 
     filtered = Cleaner.filter(arr)
@@ -95,7 +94,7 @@ class Finder
     exception?(text) ? extract_info(text) : extract_artikel
   end
 
-  # process_page_content : Line 89
+  # in process_page_content : Line 90
   def plural_noun?
     text = Cleaner.h3_headline_text(response)
     arr = text.split(', ')
@@ -110,7 +109,7 @@ class Finder
     !arr.include?('m') && !arr.include?('n') && !arr.include?('f')
   end
 
-  # process_page_content : Line 93
+  # in process_page_content : Line 94
   def exception?(text)
     text.include?('andere Schreibung') ||
       text.include?('flektierte Form') && text.length < 400
